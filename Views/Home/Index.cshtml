@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "HTMLEditor 2020";
+}
+
+<link rel="import" href="menus">
+
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@ViewData["Title"]</title>
+    <script src="js/ckeditor.js"></script>
+    <script src="js/sample.js"></script>
+    <link rel="stylesheet" href="css/samples.css">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+</head>
+<body>
+
+
+    <div class="grid-container">
+        <div class="grid-width-100">
+            <div id="editor">
+                <h1>Hello Electron.NET and .NET Core 3 !</h1>
+                <p>This is really amaizing what you can do with this wrapper.</p>
+            </div>
+        </div>
+     </div>
+
+
+
+   <script>
+    initSample();
+
+    CKEDITOR.on('instanceReady', function( evt )
+     {
+     var editor = evt.editor;
+     editor.execCommand('maximize');
+     });
+
+        (function(){
+
+            const {ipcRenderer} = require("electron");
+
+            ipcRenderer.on("setContent", (event, arg) => {
+                CKEDITOR.instances.editor.setData( arg );
+            });
+
+            ipcRenderer.on("saveContent", (event, arg) => {
+                 //var content = document.getElementById('editor').innerHTML;
+                 var content = CKEDITOR.instances.editor.getData();
+                 ipcRenderer.send("saveFile", content);
+            });
+         }());
+
+   </script>
+
+
+</body>
+</html>
